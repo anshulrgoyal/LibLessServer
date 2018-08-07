@@ -6,6 +6,7 @@ const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
 const handler = require('./lib/handler');
+const helper=require('./lib/helper');
 
 
 
@@ -47,6 +48,15 @@ const serverLogic = (req, res) => {
     let buffer = "";
     let queryParameter = parserdUrl.query;
     const decoder = new StringDecoder('utf-8');
+    let user=null;
+    if('token' in headers){
+        helper.verify(headers.token,(err,tokenUser)=>{
+            if(err) ;
+            else{
+                user=tokenUser;
+            }
+        })
+    }
     req.on('data', function (data) {
         buffer += decoder.write(data);
     })
@@ -54,7 +64,7 @@ const serverLogic = (req, res) => {
         buffer += decoder.end();
         buffer = !!buffer ? JSON.parse(buffer) : buffer;
         const chooseHandler = trimedUrl in handler ? handler[trimedUrl] : handleNotFound;
-        const data = { payload: buffer, queryParameter, method, headers, parserdUrl, trimedUrl };
+        const data = { payload: buffer, queryParameter, method, headers, parserdUrl, trimedUrl ,user};
         chooseHandler(data, (statusCode, json) => {
             res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
