@@ -3,13 +3,20 @@
 const http = require('http');
 const https = require('https');
 const url = require('url');
+const queryString = require('querystring')
 const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
+const cluster=require('cluster')
+
+// extra code for help
 const handler = require('./lib/handler');
 const helper = require('./lib/helper');
 
+// ports for the process 
+const httpPort=4443;
+const httpsPort=3000;
 
-
+// http server
 const serverHttp = http.createServer((req, res) => {
     serverLogic(req, res);
 })
@@ -22,18 +29,12 @@ const serverHttps = https.createServer(options, (req, res) => {
     serverLogic(req, res);
 })
 
-
-
-
-
-
-
-serverHttp.listen(4443, () => {
-    console.log('server started at port 4443');
+serverHttp.listen(httpPort, () => {
+   console.log('http server started in at port '+httpPort);
 })
 
-serverHttps.listen(3000, () => {
-    console.log('server started at port 3000');
+serverHttps.listen(httpsPort, () => {
+    console.log('https server started at port '+httpsPort);
 })
 const handleNotFound = (data, cb) => {
     cb(404, {});
@@ -61,14 +62,19 @@ const serverLogic = (req, res) => {
         buffer += decoder.write(data);
     })
     req.on('end', function () {
-        buffer += decoder.end();
-        buffer = !!buffer ? JSON.parse(buffer) : buffer;
+        buffer += decoder.end()
+        if (headers['content-type'] === 'application/x-www-form-urlencoded') buffer = queryString.parse(buffer);
+        if(headers['content-type'] === 'application/json') buffer=JSON.parse(buffer)
         const chooseHandler = trimedUrl in handler ? handler[trimedUrl] : handleNotFound;
         const data = { payload: buffer, queryParameter, method, headers, parserdUrl, trimedUrl, user };
         chooseHandler(data, (statusCode, json) => {
             res.setHeader('Content-Type', 'application/json');
             res.writeHead(statusCode);
             res.end(JSON.stringify(json));
+            // res.setHeader('Content-Type', 'text/html');
+            // res.writeHead(statusCode);
+            // res.end(json);
         })
     })
 }
+console.log(process.pid);
