@@ -8,9 +8,10 @@ This is attempt to write a Nodejs Server without any npm module and with out any
 
 <h2>Contains a bench Marking tool for server</h2>
 command :
-```bash
+```shell
 node cli.js url --time time(in s) --request requestPerSecond --interval 1000 --method [post,get,put,delete,patch] --body string --statusCode [any valid status code for http]
 ```
+<br>
 Flags: <br>
 1 <b>time</b> : provide the time for which request must be made<br>
 2 <b>request </b>:provide the number of concurrent request<br>
