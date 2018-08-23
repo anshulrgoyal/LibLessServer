@@ -10,8 +10,6 @@ This is attempt to write a Nodejs Server without any npm module and with out any
 command :
 ```bash
 node cli.js url --time time(in s) --request requestPerSecond --interval 1000 --method [post,get,put,delete,patch] --body string --statusCode [any valid status code for http]
-
-
 ```
 Flags: <br>
 1 <b>time</b> : provide the time for which request must be made<br>
