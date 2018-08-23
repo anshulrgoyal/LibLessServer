@@ -10,10 +10,7 @@ ajax = (url, method, body=null, headers = {"Content-Type":"application/json"},cb
     let responseData="";
     return new Promise((resolve, reject) => {
         const parsedUrl = URL.parse(url, true);
-        const options = {
-            hostname: parsedUrl.hostname,
-            protocol: parsedUrl.protocol,
-            path:parsedUrl.pathname,
+        const options = {...parsedUrl,
             method,
             headers:{...headers,'user-agent':'liblessserver'},
 
