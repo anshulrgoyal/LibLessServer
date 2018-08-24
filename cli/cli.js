@@ -1,25 +1,27 @@
 const readLine = require('readline');
-const https = require('http');
+const https = require('https');
+const http=require('http');
 const URL = require('url');
 const event = require('events');
 
 class _event extends event { };
 
 const e = new _event();
-const start = Date.now();
+let start = Date.now();
 
 let error = [];
 let sucess = [];
 let i = 0;
 const argv = process.argv
-const url = argv[2];
+let url = argv[2];
 const flags = {
     time: 10,
     request: 200,
     method: 'get',
     body: null,
     statusCode: 200,
-    interval: 1000
+    interval: 1000,
+    quesAns:false,
 }
 process.stdout.write(`
 .__   __.   ______   .___________.        ___      .______   
@@ -31,13 +33,16 @@ process.stdout.write(`
                                                             
 `)
 process.stdout.write('\n');
-// const _interface=readLine.createInterface({
-//     input:process.stdin,
-//     output:process.stdout,
-//     prompt:'>'
-// })
+const _interface=readLine.createInterface({
+    input:process.stdin,
+    output:process.stdout,
+    prompt:'>'
+})
 
-// _interface.prompt()
+const protocols={
+    'http:':http,
+    'https:':https
+}
 
 // structure of command node file url --time time(in s) --request requestPerSecond --interval 1000 --method [post,get,put,delete,patch] --body string --statusCode [any valid status code for http]
 
@@ -49,7 +54,7 @@ argv.forEach((argument, i, arr) => {
             flags[argument] = arr[i + 1];
         }
         else {
-            return;
+            flags[argument]=true;
         }
     }
     else {
@@ -101,7 +106,8 @@ ajax = (url, method, body = null, headers = { "Content-Type": "application/json"
 
         }
         const time = Date.now();
-        const req = https.request(options, (res) => {
+       // console.log(parsedUrl.protocol)
+        const req = protocols[parsedUrl.protocol].request(options, (res) => {
 
             res.on('data', (data) => {
                 responseData = responseData + data;
@@ -121,12 +127,16 @@ ajax = (url, method, body = null, headers = { "Content-Type": "application/json"
 
     });
 }
-const totals=flags.total?flags.total: Number(flags.time)*Number(flags.request)/1000;
+
+e.on('start',()=>{
+    start=Date.now()
+    const totals=flags.total?flags.total: Number(flags.time)*Number(flags.request)/1000;
 let exe = -1;
 let total=0;
-const id = setInterval(_ => makeRequest(), flags.interval)
+    const id = setInterval(_ => makeRequest(), flags.interval)
 const makeRequest = () => {
     exe++;
+    console.log(exe)
     for (i = 0; i < flags.request; i++) {
         if (total >totals) {
             clearInterval(id)
@@ -165,6 +175,24 @@ const makeRequest = () => {
         }
     }
 }
-
+})
+if(argv.length>3){
+    e.emit('start')
+}
+else{
+    _interface.question('Enter the Url\n>',(ans)=>{
+     url=ans;
+     _interface.question('Enter the number of Request per second\n>',(ans)=>{
+         flags.request=ans;
+         _interface.question('Enter the duration of the benchmark\n>',(ans)=>{
+             flags.time=ans;
+             _interface.question('Enter the total number of request\n>',(ans)=>{
+                 flags.total=ans
+                 e.emit('start');
+             })
+         })
+     })
+    });
+}
 
 
