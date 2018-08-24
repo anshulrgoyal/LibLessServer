@@ -6,15 +6,15 @@ const url = require('url');
 const queryString = require('querystring')
 const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
-const cluster=require('cluster')
+const cluster = require('cluster')
 
 // extra code for help
 const handler = require('./lib/handler');
 const helper = require('./lib/helper');
 
 // ports for the process 
-const httpPort=4443;
-const httpsPort=3000;
+const httpPort = 4443;
+const httpsPort = 3000;
 
 // http server
 const serverHttp = http.createServer((req, res) => {
@@ -30,11 +30,11 @@ const serverHttps = https.createServer(options, (req, res) => {
 })
 
 serverHttp.listen(httpPort, () => {
-   console.log('http server started in at port '+httpPort);
+    console.log('http server started in at port ' + httpPort);
 })
 
 serverHttps.listen(httpsPort, () => {
-    console.log('https server started at port '+httpsPort);
+    console.log('https server started at port ' + httpsPort);
 })
 const handleNotFound = (data, cb) => {
     cb(404, {});
@@ -63,22 +63,37 @@ const serverLogic = (req, res) => {
     })
     req.on('end', function () {
         buffer += decoder.end()
-        if (headers['content-type'] === 'application/x-www-form-urlencoded') buffer = queryString.parse(buffer);
-        if(headers['content-type'] === 'application/json') buffer=JSON.parse(buffer)
+        if(buffer){
+            if (headers['content-type'] === 'application/x-www-form-urlencoded') buffer = queryString.parse(buffer);
+        if (headers['content-type'] === 'application/json') buffer = JSON.parse(buffer)
+        }
         const chooseHandler = trimedUrl in handler ? handler[trimedUrl] : handleNotFound;
         const data = { payload: buffer, queryParameter, method, headers, parserdUrl, trimedUrl, user };
-        chooseHandler(data, (statusCode, json) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.writeHead(statusCode);
-            res.end(JSON.stringify(json));
-            // res.setHeader('Content-Type', 'text/html');
-            // res.writeHead(statusCode);
-            // res.end(json);
+       try{
+        chooseHandler(data, (statusCode, payload, contentType) => {
+            processHandler(res, statusCode, payload, contentType)
         })
+       }
+       catch(e){
+          whenError(res);
+       }
     })
 }
+const whenError=(res)=>{
+res.writeHead(500)
+res.end('error')
+}
+const processHandler = (res, statusCode, payload, contentType) => {
+    if (contentType = 'json') { payload = JSON.stringify(payload); res.setHeader('Content-Type', 'application/json'); }
+    else if (contentType = 'html') res.setHeader('Content-Type', 'application/xml+html');
+    else if (contentType = 'js') res.setHeader('Content-Type', 'application/javascript');
+    else if (contentType = 'jpeg') res.setHeader('Content-Type', 'image/jpeg');
+    else if (contentType = 'css') res.setHeader('Content-Type', 'text/css');
+    res.writeHead(statusCode);
+    res.end(payload)
+}
 console.log(process.pid);
-setTimeout(()=>{
-process.exit(1)
+setTimeout(() => {
+    process.exit(1)
 
-},Math.random()*100000)
+}, Math.random() * 100000)
