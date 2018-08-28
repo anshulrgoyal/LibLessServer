@@ -14,7 +14,7 @@ lib.create = (dir, record, data, cb = () => { }) => {
         const [type,data]=response.split('\r\n');
         if(type==='error') cb(data,null);
         else{
-            cb(null,JSON.stringify(data))
+            cb(null,JSON.parse(data))
         }
         socket.destroy();
     })
@@ -33,9 +33,17 @@ lib.delete = (dir, record, cb) => {
     })
     socket.on('end',()=>{
         const [type,data]=response.split('\r\n');
+        if(data){
+            try{
+                JSON.parse(data)
+            }
+            catch{
+                data
+            }
+        }
         if(type==='error') cb(data,null);
         else{
-            cb(null,JSON.stringify(data))
+            cb(null,JSON.parse(data))
         }
         socket.destroy();
     })
@@ -54,9 +62,17 @@ lib.read = (dir, record, cb) => {
     })
     socket.on('end',()=>{
         const [type,data]=response.split('\r\n');
+        if(data){
+            try{
+                JSON.parse(data)
+            }
+            catch{
+                data
+            }
+        }
         if(type==='error') cb(data,null);
         else{
-            cb(null,JSON.stringify(data))
+            cb(null,JSON.parse(data))
         }
         socket.destroy();
     })
@@ -76,9 +92,17 @@ lib.update=(dir,record,data,cb)=>{
     })
     socket.on('end',()=>{
         const [type,data]=response.split('\r\n');
+        if(data){
+            try{
+                JSON.parse(data)
+            }
+            catch{
+                data
+            }
+        }
         if(type==='error') cb(data,null);
         else{
-            cb(null,JSON.stringify(data))
+            cb(null,JSON.parse(data))
         }
         socket.destroy();
     })

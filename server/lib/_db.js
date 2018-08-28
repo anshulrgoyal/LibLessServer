@@ -28,7 +28,7 @@ lib.delete = (dir, record, cb) => {
     const isDir = fs.existsSync(path.resolve(`${__dirname}/../.data/${dir}`))
     if (isDir) {
         fs.unlink(path.resolve(`${__dirname}/../.data/${dir}/${record}.json`), (err) => {
-            cb(err);
+            cb(err,{message:'sucess'});
         })
     }
     else {
