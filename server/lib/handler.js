@@ -11,6 +11,7 @@ handler._user.post = (data, cb) => {
     if (!!firstName && !!lastName && !!lastName && !!password && !!phone) {
         db.read('users', phone, (err, data) => {
             if (err) {
+               // console.log(err)
                 const salt = crypto.randomBytes(16).toString('hex');
                 const hashedPassword = crypto.createHmac('sha256', salt).update(password).digest('hex');
                 const user = { salt, hashedPassword, firstName, lastName, phone, checks: 0, checkIds: [] };

@@ -84,9 +84,16 @@ server.on('connection', (socket) => {
     socket.on('data', (data) => {
         const stringData = data.toString();
         const [method, document, id, updates] = stringData.split('\r\n');
-        const parseredBody = JSON.parse(updates);
+        let parseredBody={};
+        if(updates){
+           parseredBody = JSON.parse(updates);
+        }
         handleMethod(method, document, id, parseredBody, (err, data) => {
-            if (err) socket.write('err\r\n' + err);
+            if (err) {
+                socket.write('error\r\n' + err)
+                socket.end();
+                socket.destroy();
+            }
             else {
                 socket.write('data\r\n' + JSON.stringify(data));
                 socket.end();
