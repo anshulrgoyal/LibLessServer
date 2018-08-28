@@ -6,7 +6,7 @@ const url = require('url');
 const queryString = require('querystring')
 const StringDecoder = require('string_decoder').StringDecoder;
 const fs = require('fs');
-const cluster = require('cluster')
+// const cluster = require('cluster')
 
 // extra code for help
 const handler = require('./lib/handler');
@@ -93,7 +93,7 @@ const processHandler = (res, statusCode, payload, contentType) => {
     res.end(payload)
 }
 console.log(process.pid);
-setTimeout(() => {
-    process.exit(1)
+// setTimeout(() => {
+//     process.exit(1)
 
-}, Math.random() * 100000)
+// }, Math.random() * 100000)

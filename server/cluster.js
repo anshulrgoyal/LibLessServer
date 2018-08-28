@@ -8,7 +8,7 @@ const os=require('os')
 if(cluster.isMaster){
     // giving out the process id for restart
     console.log('the process id is',process.pid)
-
+  require('./lib/dbServer');
     // creating a fork time the cpu cores
  for(let i=0;i<os.cpus().length;i++){
      cluster.fork();
