@@ -3,7 +3,7 @@ const https = require('https');
 const http=require('http');
 const URL = require('url');
 const event = require('events');
-
+const {ajax}=require('./helper')
 class _event extends event { };
 
 const e = new _event();
@@ -23,27 +23,25 @@ const flags = {
     interval: 1000,
     quesAns:false,
 }
-process.stdout.write(`
-.__   __.   ______   .___________.        ___      .______   
-|  \ |  |  /  __  \  |           |       /   \     |   _  \  
-|   \|  | |  |  |  |  ---|  |----       /  ^  \    |  |_)  | 
-|       | |  |  |  |     |  |          /  /_\  \   |   _  <  
-|  |\   | |   --'  |     |  |         /  _____  \  |  |_)  | 
-|__| \__|  \______/      |__|        /__/     \__\ |______/  
-                                                            
-`)
+const title=`
+ÛÛÛÛÛ       ÛÛÛÛÛÛÛÛÛÛ ÛÛÛÛÛÛÛÛÛÛÛ  ÛÛ  ÛÛÛÛÛÛÛÛÛ        ÛÛÛÛÛÛÛ    ÛÛÛÛÛ   ÛÛÛÛÛ ÛÛÛÛÛÛÛÛÛÛ ÛÛÛÛÛÛÛÛÛÛÛ   ÛÛÛÛÛ          ÛÛÛÛÛÛÛ      ÛÛÛÛÛÛÛÛÛ   ÛÛÛÛÛÛÛÛÛÛ
+°°ÛÛÛ       °°ÛÛÛ°°°°°Û°Û°°°ÛÛÛ°°°Û ÛÛÛ ÛÛÛ°°°°°ÛÛÛ     ÛÛÛ°°°°°ÛÛÛ °°ÛÛÛ   °°ÛÛÛ °°ÛÛÛ°°°°°Û°°ÛÛÛ°°°°°ÛÛÛ °°ÛÛÛ         ÛÛÛ°°°°°ÛÛÛ   ÛÛÛ°°°°°ÛÛÛ °°ÛÛÛ°°°°ÛÛÛ
+°ÛÛÛ        °ÛÛÛ  Û ° °   °ÛÛÛ  ° °°° °ÛÛÛ    °°°     ÛÛÛ     °°ÛÛÛ °ÛÛÛ    °ÛÛÛ  °ÛÛÛ  Û °  °ÛÛÛ    °ÛÛÛ  °ÛÛÛ        ÛÛÛ     °°ÛÛÛ °ÛÛÛ    °ÛÛÛ  °ÛÛÛ   °°ÛÛÛ
+°ÛÛÛ        °ÛÛÛÛÛÛ       °ÛÛÛ        °°ÛÛÛÛÛÛÛÛÛ    °ÛÛÛ      °ÛÛÛ °ÛÛÛ    °ÛÛÛ  °ÛÛÛÛÛÛ    °ÛÛÛÛÛÛÛÛÛÛ   °ÛÛÛ       °ÛÛÛ      °ÛÛÛ °ÛÛÛÛÛÛÛÛÛÛÛ  °ÛÛÛ    °ÛÛÛ
+°ÛÛÛ        °ÛÛÛ°°Û       °ÛÛÛ         °°°°°°°°ÛÛÛ   °ÛÛÛ      °ÛÛÛ °°ÛÛÛ   ÛÛÛ   °ÛÛÛ°°Û    °ÛÛÛ°°°°°ÛÛÛ  °ÛÛÛ       °ÛÛÛ      °ÛÛÛ °ÛÛÛ°°°°°ÛÛÛ  °ÛÛÛ    °ÛÛÛ
+°ÛÛÛ      Û °ÛÛÛ °   Û    °ÛÛÛ         ÛÛÛ    °ÛÛÛ   °°ÛÛÛ     ÛÛÛ   °°°ÛÛÛÛÛ°    °ÛÛÛ °   Û °ÛÛÛ    °ÛÛÛ  °ÛÛÛ      Û°°ÛÛÛ     ÛÛÛ  °ÛÛÛ    °ÛÛÛ  °ÛÛÛ    ÛÛÛ
+ÛÛÛÛÛÛÛÛÛÛÛ ÛÛÛÛÛÛÛÛÛÛ    ÛÛÛÛÛ       °°ÛÛÛÛÛÛÛÛÛ     °°°ÛÛÛÛÛÛÛ°      °°ÛÛÛ      ÛÛÛÛÛÛÛÛÛÛ ÛÛÛÛÛ   ÛÛÛÛÛ ÛÛÛÛÛÛÛÛÛÛÛ °°°ÛÛÛÛÛÛÛ°   ÛÛÛÛÛ   ÛÛÛÛÛ ÛÛÛÛÛÛÛÛÛÛ
+°°°°°°°°°°° °°°°°°°°°°    °°°°°         °°°°°°°°°        °°°°°°°         °°°      °°°°°°°°°° °°°°°   °°°°° °°°°°°°°°°°    °°°°°°°    °°°°°   °°°°° °°°°°°°°°°
+`
+
+
+process.stdout.write(['\033[',91, 'm',title, '\033[0m'].join(''))
 process.stdout.write('\n');
 const _interface=readLine.createInterface({
     input:process.stdin,
     output:process.stdout,
     prompt:'>'
 })
-
-const protocols={
-    'http:':http,
-    'https:':https
-}
-
 // structure of command node file url --time time(in s) --request requestPerSecond --interval 1000 --method [post,get,put,delete,patch] --body string --statusCode [any valid status code for http]
 
 const regex = /^--[a-z]*/gi
@@ -63,6 +61,7 @@ argv.forEach((argument, i, arr) => {
 
 })
 e.on('compeleted', function () {
+  process.stdout.clearLine()
     process.stdout.write('\n')
     process.stdout.write(`Total Number Of request is ${error.length + sucess.length} `);
     process.stdout.write('\n')
@@ -81,7 +80,7 @@ e.on('compeleted', function () {
         })
     }
     process.stdout.write('\n')
-    console.table(stat) 
+    console.table(stat)
     process.stdout.write('\n')
 process.exit(0)
 
@@ -93,40 +92,18 @@ process.exit(0)
 
 
 })
-ajax = (url, method, body = null, headers = { "Content-Type": "application/json" }, cb = () => { }) => {
-    let responseData = "";
-    return new Promise((resolve, reject) => {
-        const parsedUrl = URL.parse(url, true);
-        const options = {
-            ...parsedUrl,
-            method,
-            headers: { ...headers, 'user-agent': 'liblessserver', connection: 'keep-alive' },
+    const time = Date.now();
 
-        }
-        const time = Date.now();
-       // console.log(parsedUrl.protocol)
-        const req = protocols[parsedUrl.protocol].request(options, (res) => {
-
-            res.on('data', (data) => {
-                responseData = responseData + data;
-            })
-            res.on('end', (data) => {
-                cb(null, responseData, Date.now() - time, res.statusCode)
-                resolve(responseData);
-            })
-        });
-        if (typeof (body) == 'object') {
-            req.write(JSON.stringify(body));
-        }
-        req.on('error', (err) => {
-            cb(err, null, Date.now() - time);
-            //reject(err)
-        })
-
-    });
-}
 
 e.on('start',()=>{
+  let dots=''
+  setInterval(function() {
+    process.stdout.clearLine();  // clear current text
+    process.stdout.cursorTo(0);  // move cursor to beginning of line
+    dots+='.'
+    process.stdout.write("Overloading" + dots);  // write text
+  }, 300);
+
     start=Date.now()
     const totals=flags.total?flags.total: Number(flags.time)*Number(flags.request)/1000;
 let exe = -1;
@@ -134,7 +111,6 @@ let total=0;
     const id = setInterval(_ => makeRequest(), flags.interval)
 const makeRequest = () => {
     exe++;
-    console.log(exe)
     for (i = 0; i < flags.request; i++) {
         if (total >totals) {
             clearInterval(id)
@@ -142,9 +118,7 @@ const makeRequest = () => {
             break;
         }
         else {
-            ajax(url, flags.method, null, null, (err, data, time, statusCode) => {
-                // console.log(data)
-                // console.log(exe)
+            ajax(url,{}, (err, data, time, statusCode) => {
                 total++;
                 if (err) {
                     // console.log(err)
