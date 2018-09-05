@@ -1,63 +1,116 @@
-'use strict'
+const net =require('net');
 
-const fs = require('fs');
-const path = require('path');
+
+
 
 let lib={};
 lib.create = (dir, record, data, cb = () => { }) => {
-    const isDir = fs.existsSync(path.resolve(`${__dirname}/../.data/${dir}`))
-    if (isDir) {
-        fs.writeFile(path.resolve(`${__dirname}/../.data/${dir}/${record}.json`), JSON.stringify(data), (err) => {
-            if (err) cb(err);
-            else cb(null,data);
-        });
-    }
-    else {
-        fs.mkdir(path.resolve(`${__dirname}/../.data/${dir}`), function (err) {
-            if (err) cb(err);
-            else {
-                fs.writeFile(path.resolve(`${__dirname}/../.data/${dir}/${record}.json`), JSON.stringify(data), (err) => {
-                    if (err) cb(err);
-                    else cb(null,data);
-                });
-            }
-        })
-    }
+    let response='';
+    const socket=net.connect({host:'localhost',port:4442})
+    socket.on('data',(data)=>{
+       response+=data.toString();
+    })
+    socket.on('end',()=>{
+        const [type,data]=response.split('\r\n');
+        if(type==='error') cb(data,null);
+        else{
+            cb(null,JSON.parse(data))
+        }
+        socket.destroy();
+    })
+    socket.on('error',(err)=>{
+        cb(err,null)
+        socket.destroy()
+    })
+    const string=`create\r\n${dir}\r\n${record}\r\n${JSON.stringify(data)}`
+    socket.write(Buffer.from(string));
 }
 lib.delete = (dir, record, cb) => {
-    const isDir = fs.existsSync(path.resolve(`${__dirname}/../.data/${dir}`))
-    if (isDir) {
-        fs.unlink(path.resolve(`${__dirname}/../.data/${dir}/${record}.json`), (err) => {
-            cb(err);
-        })
-    }
-    else {
-        cb('delete failed no such directory or file exists');
-    }
+    let response='';
+    const socket=net.connect({host:'localhost',port:4442})
+    socket.on('data',(data)=>{
+        response+=data.toString();
+    })
+    socket.on('end',()=>{
+        const [type,data]=response.split('\r\n');
+        if(data){
+            try{
+                JSON.parse(data)
+            }
+            catch{
+                data
+            }
+        }
+        if(type==='error') cb(data,null);
+        else{
+            cb(null,JSON.parse(data))
+        }
+        socket.destroy();
+    })
+    socket.on('error',(err)=>{
+        cb(err,null)
+        socket.destroy()
+    })
+    const string=`delete\r\n${dir}\r\n${record}`
+    socket.write(Buffer.from(string));
 }
 lib.read = (dir, record, cb) => {
-    const isDir = fs.existsSync(path.resolve(`${__dirname}/../.data/${dir}`));
-    if (isDir) {
-        fs.readFile(path.resolve(`${__dirname}/../.data/${dir}/${record}.json`), (err, data) => {
-            if (err) cb(err, null);
-            else cb(err, JSON.parse(data.toString('utf-8')));
-        })
-    }
-    else {
-        cb('no such file or directory exists');
-    }
+    let response='';
+    const socket=net.connect({host:'localhost',port:4442})
+    socket.on('data',(data)=>{
+        response+=data.toString();
+    })
+    socket.on('end',()=>{
+        const [type,data]=response.split('\r\n');
+        if(data){
+            try{
+                JSON.parse(data)
+            }
+            catch{
+                data
+            }
+        }
+        if(type==='error') cb(data,null);
+        else{
+            cb(null,JSON.parse(data))
+        }
+        socket.destroy();
+    })
+    socket.on('error',(err)=>{
+        cb(err,null)
+        socket.destroy()
+    })
+    const string=`read\r\n${dir}\r\n${record}`
+    socket.write(Buffer.from(string));
 }
 
 lib.update=(dir,record,data,cb)=>{
-    lib.read(dir,record,(err,oldData)=>{
-     if(err) cb(err,null);
-     else{
-         lib.create(dir,record,{...oldData,...data},(err,data)=>{
-             if(err) cb(err,null);
-             else cb(err,data);
-         })
-     }
+    let response='';
+    const socket=net.connect({host:'localhost',port:4442})
+    socket.on('data',(data)=>{
+        response+=data.toString();
     })
+    socket.on('end',()=>{
+        const [type,data]=response.split('\r\n');
+        if(data){
+            try{
+                JSON.parse(data)
+            }
+            catch{
+                data
+            }
+        }
+        if(type==='error') cb(data,null);
+        else{
+            cb(null,JSON.parse(data))
+        }
+        socket.destroy();
+    })
+    socket.on('error',(err)=>{
+        cb(err,null)
+        socket.destroy()
+    })
+    const string=`update\r\n${dir}\r\n${record}\r\n${JSON.stringify(data)}`
+    socket.write(Buffer.from(string));
 }
 module.exports = lib;
-// lib.read('test', 'test',(err,data) => { console.log(err,data) });
