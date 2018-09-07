@@ -1,8 +1,5 @@
 const net =require('net');
 
-
-
-
 let lib={};
 lib.create = (dir, record, data, cb = () => { }) => {
     let response='';
