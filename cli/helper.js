@@ -32,8 +32,8 @@ const ajax = (url = 'localhost:3000', options = {},
   const headersToSent = Object.keys(headers).map(key => `${key}:${headers[key]}`).join('\r\n')
   const socket = net.Socket();
   const listener = socket.connect({
-    port: 4443,
-    hostname: 'localhost'
+    port:port?port:80,
+    hostname
   })
   listener.on('error', (err) => {
     cb(err, null, Date.now() - time, 500);

@@ -32,7 +32,7 @@ server.on('request', (req, res) => {
         let {
           username,
           password
-        } = JSON.parse(buffer);
+        } = buffer?JSON.parse(buffer):{};
         login(username, password, res, (err, foundUser) => {
           res.writeHead(200);
           res.setHeader('content-type', 'application/json');
@@ -52,7 +52,7 @@ server.on('request', (req, res) => {
         });
         break;
       case 'signup':
-        let payload = JSON.parse(buffer);
+        let payload =buffer? JSON.parse(buffer):{};
         signup(payload.username, payload.password, res, (err, user) => {
           res.setHeader('content-type', 'application/json')
           res.writeHeader(200)

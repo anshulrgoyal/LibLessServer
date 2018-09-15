@@ -70,7 +70,7 @@ lib.read = (dir, record, cb) => {
     if (data) {
       try {
         JSON.parse(data)
-      } catch {
+      } catch(e) {
         data
       }
     }

@@ -13,7 +13,7 @@ lib.create = (dir, record, data, cb = () => {}) => {
     });
   } else {
     fs.mkdir(path.resolve(`${__dirname}/../.data/${dir}`), function(err) {
-      if (err) cb(err);
+      if (err) cb(err,null);
       else {
         fs.writeFile(path.resolve(`${__dirname}/../.data/${dir}/${record}.json`), JSON.stringify(data), (err) => {
           if (err) cb(err);

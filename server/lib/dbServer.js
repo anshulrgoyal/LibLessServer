@@ -84,13 +84,9 @@ server.on('connection', (socket) => {
     }
     handleMethod(method, document, id, parseredBody, (err, data) => {
       if (err) {
-        socket.write('error\r\n' + err)
-        socket.end();
-        socket.destroy();
+        socket.end('error\r\n' + err);
       } else {
-        socket.write('data\r\n' + JSON.stringify(data));
-        socket.end();
-        socket.destroy();
+        socket.end('data\r\n' + JSON.stringify(data));
       }
     });
   })

@@ -25,7 +25,7 @@ parseSession = (req) => {
 _createSessionId = () => {
   const id = crypto.randomBytes(12);
   if (id in db) {
-    return createSession();
+    return _createSession();
   } else {
     db[id] = {
       lastAccess: Date.now()
