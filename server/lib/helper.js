@@ -2,7 +2,13 @@
 const crypto = require('crypto');
 
 let lib = {};
-// time in hours,payload is an object
+
+/**
+ * the method for creating tokens
+ * @param  {Object} payload the data to be encoded in the token
+ * @param  {Number} time    the the time after which token expires
+ * @return {[type]}         [description]
+ */
 lib.createToken = (payload, time) => {
   const head = Buffer.from(JSON.stringify({
     "alg": "HS256",
@@ -17,6 +23,12 @@ lib.createToken = (payload, time) => {
   return head + '.' + pay + '.' + sign;
 }
 
+/**
+ * the method to verify the token
+ * @param  {String}   token the token to be verified
+ * @param  {Function} cb    the function envoked on completetion
+ * @return {[Null]}         
+ */
 lib.verify = (token, cb) => {
   const [head, pay, sign] = token.split('.');
   const verifySign = crypto.createHmac('SHA256', 'some').update(head + '.' + pay).digest('base64').replace(/\-/g, "+").replace(/_/g, "/");
@@ -33,6 +45,13 @@ lib.verify = (token, cb) => {
     cb('token invalid', null);
   }
 }
+
+/**
+ * the method to refresh the token
+ * @param  {String}   token the token to be refreshed
+ * @param  {Function} cb    the function envoked on completetion
+ * @return {[Null]}         
+ */
 lib.refresh = (token, cb) => {
   const [head, pay, sign] = token.split('.');
   const verifySign = crypto.createHmac('SHA256', 'some').update(head + '.' + pay).digest('base64').replace(/\-/g, "+").replace(/_/g, "/");

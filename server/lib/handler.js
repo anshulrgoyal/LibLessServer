@@ -6,6 +6,13 @@ const helper = require('./helper')
 
 let handler = {};
 handler._user = {};
+
+/**
+ * the handler for creating the user
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._user.post = (data, cb) => {
   const {
     payload: {
@@ -57,7 +64,12 @@ handler._user.post = (data, cb) => {
   }
 }
 
-
+/**
+ * the handler for getting  the user
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._user.get = (data, cb = () => {}) => {
   const {
     queryParameter: {
@@ -89,6 +101,13 @@ handler._user.get = (data, cb = () => {}) => {
     }, 'json')
   }
 }
+
+/**
+ * the handler for modifying user
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._user.put = (data, cb = () => {}) => {
   const {
     payload: {
@@ -126,6 +145,13 @@ handler._user.put = (data, cb = () => {}) => {
     }, 'json')
   }
 }
+
+/**
+ * the handler for  deleting the user
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._user.delete = (data, cb = () => {}) => {
   const {
     queryParameter: {
@@ -155,6 +181,13 @@ handler._user.delete = (data, cb = () => {}) => {
     })
   }
 }
+
+/**
+ * the handler for the user
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler.user = (data, cb = () => {}) => {
   const {
     method
@@ -170,6 +203,12 @@ handler.user = (data, cb = () => {}) => {
   }
 }
 handler._tokens = {};
+/**
+ * the handler for creating the token
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._tokens.post = (data, cb) => {
   const {
     payload: {
@@ -204,6 +243,13 @@ handler._tokens.post = (data, cb) => {
     }, 'json')
   }
 }
+
+/**
+ * the handler for refreshing the token
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._tokens.get = (data, cb) => {
   const {
     queryParameter: {
@@ -229,6 +275,13 @@ handler._tokens.get = (data, cb) => {
     }, 'json')
   }
 }
+
+/**
+ * the handler for token
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler.tokens = (data, cb = () => {}) => {
   const {
     method
@@ -244,6 +297,12 @@ handler.tokens = (data, cb = () => {}) => {
   }
 }
 handler._checks = {};
+/**
+ * the handler for creating the check
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._checks.post = (data, cb) => {
   if (data.user && data.user.phone) {
     const {
@@ -316,6 +375,12 @@ handler._checks.post = (data, cb) => {
     }, 'json')
   }
 }
+/**
+ * the handler for updating the check
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._checks.put = (data, cb = () => {}) => {
   const {
     queryParameter: {
@@ -381,6 +446,13 @@ handler._checks.put = (data, cb = () => {}) => {
     })
   }
 }
+
+/**
+ * the handler for getting the check
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._checks.get = (data, cb) => {
   if (data.user && data.user.phone) {
     const {
@@ -412,6 +484,12 @@ handler._checks.get = (data, cb) => {
   }
 }
 
+/**
+ * the handler for deleting the check
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler._checks.delete = (data, cb) => {
   if (data.user && data.user.phone) {
     const {
@@ -451,7 +529,12 @@ handler._checks.delete = (data, cb) => {
     }, 'json')
   }
 }
-
+/**
+ * the handler for checks
+ * @param  {Object}   data the method contain all the porcessed info abbout the request
+ * @param  {Function} cb   the function to be invoked upon completeion
+ * @return {NULL}        
+ */
 handler.checks = (data, cb = () => {}) => {
   const {
     method
@@ -467,7 +550,5 @@ handler.checks = (data, cb = () => {}) => {
   }
 }
 handler.index = (data, cb = () => {}) => {
-
-
 }
 module.exports = handler;

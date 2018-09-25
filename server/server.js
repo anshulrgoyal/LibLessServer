@@ -39,7 +39,12 @@ const handleNotFound = (data, cb) => {
   cb(404, {});
 }
 
-// all the logic for running and extracting data from the request
+/**
+ * all the logic for the running and extracting data from the request
+ * @param  {Stream} req the object has all the data related to the request
+ * @param  {Stream|Object} res contain the methods to send back the data
+ * @return {NULL}     
+ */
 const serverLogic = (req, res) => {
   //getting the url from the request and parseing it with url.parser and querystring
   const parserdUrl = url.parse(req.url, true);
@@ -102,13 +107,24 @@ const serverLogic = (req, res) => {
     }
   })
 }
-// error handling
+/**
+ * error handling for the server
+ * @param  {Object|Stream} res all the methods to send back the data
+ * @return {NULL}     
+ */
 const whenError = (res) => {
   res.writeHead(500)
   res.end('error')
 }
 
-
+/**
+ * send the data back to the user
+ * @param  {Object|stream} res         contains all the methooda to sent the data back to user
+ * @param  {Number} statusCode         the status code that is sent back to user
+ * @param  {Object|string} payload     the data that is sent back to user
+ * @param  {String}                    contentTypetype of data 
+ * @return {NULL}             
+ */
 const processHandler = (res, statusCode, payload, contentType) => {
   // setting up content type header for response
   if (contentType = 'json') {

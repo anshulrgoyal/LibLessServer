@@ -113,7 +113,6 @@ e.on('start', () => {
         ajax(url, {}, (err, data, time, statusCode) => {
           total++;
           if (err) {
-            console.log(err)
             error.push({
               time,
               reqNo: i + 1,

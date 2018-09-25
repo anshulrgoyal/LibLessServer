@@ -1,3 +1,10 @@
+/**
+ * the file contain the code for the db server
+ */
+
+'use strict'
+
+
 const fs = require('fs');
 const net = require('net');
 const path = require('path');
@@ -10,6 +17,16 @@ fs.readdirSync(path.resolve('./.data')).forEach((dir) => {
   })
 })
 const server = net.createServer();
+
+/**
+ * the function to handle the request to db
+ * @param  {String}   method   the operation to be excuted
+ * @param  {String}   document the colletion to be modified/created/deleted/read
+ * @param  {String}   id       the id of the document to be updated
+ * @param  {Object}   body     the updates to the document
+ * @param  {Function} cb       the function invoked on compeletion
+ * @return {NULL}            [description]
+ */
 const handleMethod = (method, document, id, body, cb = () => {}) => {
   const permittedMethods = ['read', 'create', 'update', 'delete'];
   if (permittedMethods.includes(method)) {
