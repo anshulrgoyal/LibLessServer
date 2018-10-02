@@ -1,5 +1,5 @@
 'use strict'
-
+//Imports
 const http = require('http');
 const https = require('https');
 const url = require('url');
@@ -78,10 +78,10 @@ const serverLogic = (req, res) => {
   let buffer = "";
   // decoding the buffer to string
   const decoder = new StringDecoder('utf-8');
-  req.on('data', function(data) {
+  req.on('data', function (data) {
     buffer += decoder.write(data);
   })
-  req.on('end', function() {
+  req.on('end', function () {
     buffer += decoder.end()
     if (buffer) {
       if (headers['content-type'] === 'application/x-www-form-urlencoded') buffer = queryString.parse(buffer)
